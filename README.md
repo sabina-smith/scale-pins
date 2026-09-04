@@ -77,7 +77,7 @@ drizzle/                  generated migrations
 
 ## Deploying
 
-The production instance runs on Vercel with a Neon Postgres provisioned through Vercel's marketplace, which injects `DATABASE_URL` into the project. Pushes to `main` deploy automatically. To change the schema:
+Live at **https://scale-pins.vercel.app**. The production instance runs on Vercel with a Neon Postgres provisioned through Vercel's marketplace, which injects `DATABASE_URL` into the project. Pushes to `main` deploy automatically. To change the schema:
 
 1. Edit `lib/schema.ts`, run `npm run db:generate`, commit the new file in `drizzle/`.
 2. `vercel env pull .env.production.local` to get the production `DATABASE_URL`, then `DATABASE_URL=<that url> npm run db:migrate`.
