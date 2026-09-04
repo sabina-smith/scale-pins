@@ -44,7 +44,7 @@ A line per non-obvious choice, with its reason. Add to this as the app grows.
 
 - **`pin-card.tsx` is a client component.** Hiding a preview image that fails to load needs an `onError` handler, and only client components can have one. Its props are plain data so the boundary costs nothing.
 - **Single-column list, `max-w-2xl`, rather than a grid.** Cards with wide preview images read better stacked; a grid is a two-file change (`page.tsx` owns the `<ul>`, `pin-card.tsx` owns the `<li>`) if that ever changes.
-- **Light theme only.** The scaffold's half-finished `prefers-color-scheme` variables were removed rather than carried through every Tailwind utility. A dark mode toggle is explicitly out of scope.
+- **Dark mode uses a persistent, manual toggle.** The board starts light by default; the toggle beside the title saves its choice in `localStorage` under `pin-board:theme`. The brown scale is inverted by CSS variables instead of duplicating each Tailwind utility, and the shader observes the root theme class so its ground changes with the rest of the page.
 - **`suppressHydrationWarning` on the `<time>` element only.** The relative string depends on the clock and the `title` tooltip on the locale, so server and client can legitimately disagree by a second or a timezone. Suppressing on that one element beats deferring the whole timestamp to an effect.
 - **The name is written to `localStorage` only after a successful pin**, under the key `pin-board:name`. Typing a name and abandoning the form should not remember it.
 - **The form sends a blank note as `undefined`, not `""`.** The API treats both as "no note", but an absent optional field is the more honest request body.
