@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-// A full-page WebGL backdrop: two layers of slowly drifting value noise tinted
-// sage and blush over an off-white base, plus a whisper of grain. Contrast is
+// A full-page WebGL backdrop: two layers of slowly drifting value noise, a
+// deeper and a paler warm brown over the light-brown base, plus a whisper of
+// grain. Contrast is
 // kept very low so text on top of it stays readable. Zero dependencies; if
 // WebGL is unavailable the canvas stays blank and the body colour shows.
 
@@ -51,12 +52,12 @@ void main() {
   float n = fbm(uv * 1.4 + vec2(t, -t * 0.7));
   float m = fbm(uv * 2.2 - vec2(t * 0.6, t * 0.4) + n);
 
-  vec3 base  = vec3(0.980, 0.980, 0.976);
-  vec3 sage  = vec3(0.860, 0.900, 0.870);
-  vec3 blush = vec3(0.935, 0.885, 0.865);
+  vec3 base   = vec3(0.788, 0.678, 0.545); // light brown, matches --color-brown-200
+  vec3 deeper = vec3(0.700, 0.580, 0.430);
+  vec3 paler  = vec3(0.870, 0.780, 0.660);
 
-  vec3 col = mix(base, sage, smoothstep(0.35, 0.75, n) * 0.55);
-  col = mix(col, blush, smoothstep(0.45, 0.80, m) * 0.45);
+  vec3 col = mix(base, deeper, smoothstep(0.35, 0.75, n) * 0.55);
+  col = mix(col, paler, smoothstep(0.45, 0.80, m) * 0.45);
   col += (hash(gl_FragCoord.xy + u_time) - 0.5) * 0.012;
 
   gl_FragColor = vec4(col, 1.0);

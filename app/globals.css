@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@theme {
+  /* Light brown is the default colour for everything on this board. */
+  --color-brown-50: #f5efe6;
+  --color-brown-100: #eadfce;
+  --color-brown-200: #c9ad8b;
+  --color-brown-300: #b8996f;
+  --color-brown-400: #a68459;
+  --color-brown-500: #8f6e47;
+  --color-brown-600: #755939;
+  --color-brown-700: #5c4530;
+  --color-brown-800: #45331f;
+  --color-brown-900: #2f2115;
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;

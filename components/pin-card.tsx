@@ -44,7 +44,7 @@ export default function PinCard({ pin, index }: { pin: Pin; index: number }) {
         className="group block"
       >
         {showImage && (
-          <div className="mb-5 overflow-hidden rounded-sm bg-stone-200/60">
+          <div className="mb-5 overflow-hidden rounded-sm bg-brown-300/60">
             <img
               src={pin.imageUrl as string}
               alt=""
@@ -54,18 +54,18 @@ export default function PinCard({ pin, index }: { pin: Pin; index: number }) {
             />
           </div>
         )}
-        <p className="text-[11px] uppercase tracking-[0.18em] text-stone-400">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-brown-600">
           {host}
         </p>
-        <h2 className="mt-2 text-xl font-light leading-snug text-stone-900 transition duration-300 group-hover:text-stone-500">
+        <h2 className="mt-2 text-xl font-light leading-snug text-brown-900 transition duration-300 group-hover:text-brown-700">
           {pin.title ?? host}
         </h2>
         {pin.note && (
-          <p className="mt-3 text-sm leading-relaxed text-stone-600">
+          <p className="mt-3 text-sm leading-relaxed text-brown-800">
             {pin.note}
           </p>
         )}
-        <p className="mt-4 text-xs text-stone-400">
+        <p className="mt-4 text-xs text-brown-600">
           {pin.pinnedBy} &middot;{" "}
           {/* Relative time is computed from the current clock, so the server
               and client strings can differ by a second on hydration. */}

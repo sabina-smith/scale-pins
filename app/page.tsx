@@ -17,10 +17,10 @@ export default async function Home() {
     <main className="mx-auto grid min-h-screen w-full max-w-7xl gap-14 px-6 py-14 lg:grid-cols-3 lg:gap-20 lg:px-12">
       {/* Left third: identity and the paste form, pinned while the feed scrolls. */}
       <aside className="animate-fade lg:sticky lg:top-14 lg:self-start">
-        <h1 className="text-[2.75rem] font-light leading-none tracking-tight text-stone-900">
+        <h1 className="text-[2.75rem] font-light leading-none tracking-tight text-brown-900">
           Pin Board
         </h1>
-        <p className="mt-3 text-sm text-stone-500">
+        <p className="mt-3 text-sm text-brown-700">
           Paste a link. Everyone sees it.
         </p>
         <div className="mt-12">
@@ -32,7 +32,7 @@ export default async function Home() {
       <section className="flex justify-center lg:col-span-2">
         <div className="w-full max-w-xl">
           {rows.length === 0 ? (
-            <p className="animate-rise pt-2 text-sm text-stone-400">
+            <p className="animate-rise pt-2 text-sm text-brown-600">
               Nothing here yet. The first pin goes to the top.
             </p>
           ) : (

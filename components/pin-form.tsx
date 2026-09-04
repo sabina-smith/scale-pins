@@ -8,7 +8,7 @@ const PASSWORD_STORAGE_KEY = "pin-board:password";
 
 // Underline-only fields: no boxes, the rule darkens on focus.
 const fieldClass =
-  "w-full border-0 border-b border-stone-300 bg-transparent px-0 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 transition-colors duration-300 focus:border-stone-900 focus:outline-none";
+  "w-full border-0 border-b border-brown-500 bg-transparent px-0 py-2.5 text-sm text-brown-900 placeholder:text-brown-600 transition-colors duration-300 focus:border-brown-900 focus:outline-none";
 
 export default function PinForm() {
   const router = useRouter();
@@ -106,7 +106,7 @@ export default function PinForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="group inline-flex items-center gap-2 text-sm text-stone-900 transition disabled:text-stone-400"
+          className="group inline-flex items-center gap-2 text-sm text-brown-900 transition disabled:text-brown-600"
         >
           <span>{submitting ? "Pinning" : "Pin it"}</span>
           <span
@@ -117,7 +117,7 @@ export default function PinForm() {
           </span>
         </button>
         {error && (
-          <p className="animate-fade text-xs text-rose-600">{error}</p>
+          <p className="animate-fade text-xs text-red-900">{error}</p>
         )}
       </div>
     </form>
