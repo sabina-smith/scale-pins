@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "node:crypto";
+
 import { desc } from "drizzle-orm";
 
 import { db } from "@/lib/db";
@@ -20,7 +22,23 @@ function badRequest(error: string) {
   return Response.json({ error }, { status: 400 });
 }
 
+// One shared password for the whole board, sent as a header. When the env var
+// is not set (local dev) the board is open. Constant-time compare so the
+// password cannot be guessed a character at a time from response timing.
+function passwordMatches(request: Request): boolean {
+  const expected = process.env.PIN_BOARD_PASSWORD;
+  if (!expected) return true;
+
+  const given = Buffer.from(request.headers.get("x-pin-board-password") ?? "");
+  const wanted = Buffer.from(expected);
+  return given.length === wanted.length && timingSafeEqual(given, wanted);
+}
+
 export async function POST(request: Request) {
+  if (!passwordMatches(request)) {
+    return Response.json({ error: "Wrong board password." }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

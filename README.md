@@ -2,7 +2,7 @@
 
 A bare-bones internal link feed. Paste a URL and your name, it gets fetched for a title and preview image, and it shows up at the top of a shared feed everyone can see. That is the entire product.
 
-Next.js (app router) · Postgres · Drizzle · Tailwind. No auth, no accounts — the browser remembers your name in `localStorage`.
+Next.js (app router) · Postgres · Drizzle · Tailwind. No accounts — the browser remembers your name in `localStorage`. Optionally one shared password for the whole board (`PIN_BOARD_PASSWORD`), which the browser also remembers.
 
 ## Setup
 
@@ -29,6 +29,7 @@ Request body:
 - `url` must parse as a URL with an `http` or `https` protocol.
 - `pinnedBy` must be a non-empty string.
 - `note` is optional; blank notes are stored as `null`.
+- If `PIN_BOARD_PASSWORD` is set on the server, the request must carry it in an `x-pin-board-password` header or the response is `401` with `{ "error": "Wrong board password." }`. When the variable is unset the board is open.
 
 On a validation failure the response is `400` with `{ "error": "..." }`. Otherwise the URL is fetched for `og:title` / `og:image` (a slow, dead, or bot-hostile site never fails the request — the pin is saved with `title` and `imageUrl` set to `null`), the row is inserted, and the response is `201` with the created pin:
 
@@ -57,6 +58,7 @@ Returns the 100 newest pins, newest first. No pagination, no filtering.
 ```sh
 curl -s -X POST http://localhost:3000/api/pins \
   -H 'Content-Type: application/json' \
+  -H 'x-pin-board-password: your-board-password' \
   -d '{"url":"https://nextjs.org/blog","note":"release notes","pinnedBy":"Sabina"}'
 ```
 
@@ -72,5 +74,15 @@ lib/schema.ts             the pins table
 lib/metadata.ts           the only code that talks to the outside world
 drizzle/                  generated migrations
 ```
+
+## Deploying
+
+The production instance runs on Vercel with a Neon Postgres provisioned through Vercel's marketplace, which injects `DATABASE_URL` into the project. Pushes to `main` deploy automatically. To change the schema:
+
+1. Edit `lib/schema.ts`, run `npm run db:generate`, commit the new file in `drizzle/`.
+2. `vercel env pull .env.production.local` to get the production `DATABASE_URL`, then `DATABASE_URL=<that url> npm run db:migrate`.
+3. Push.
+
+`PIN_BOARD_PASSWORD` and `FETCH_TIMEOUT_MS` are set in the Vercel project's environment variables.
 
 See `DECISIONS.md` for why things are the way they are.

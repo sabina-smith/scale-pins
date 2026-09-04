@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const NAME_STORAGE_KEY = "pin-board:name";
+const PASSWORD_STORAGE_KEY = "pin-board:password";
 
 const inputClass =
   "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-500 focus:outline-none";
@@ -13,6 +14,7 @@ export default function PinForm() {
   const [url, setUrl] = useState("");
   const [note, setNote] = useState("");
   const [pinnedBy, setPinnedBy] = useState("");
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,6 +23,8 @@ export default function PinForm() {
   useEffect(() => {
     const savedName = localStorage.getItem(NAME_STORAGE_KEY);
     if (savedName) setPinnedBy(savedName);
+    const savedPassword = localStorage.getItem(PASSWORD_STORAGE_KEY);
+    if (savedPassword) setPassword(savedPassword);
   }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -31,7 +35,10 @@ export default function PinForm() {
     try {
       const response = await fetch("/api/pins", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-pin-board-password": password,
+        },
         body: JSON.stringify({
           url,
           note: note.trim() === "" ? undefined : note,
@@ -46,6 +53,7 @@ export default function PinForm() {
       }
 
       localStorage.setItem(NAME_STORAGE_KEY, pinnedBy);
+      localStorage.setItem(PASSWORD_STORAGE_KEY, password);
       setUrl("");
       setNote("");
       router.refresh();
@@ -78,7 +86,7 @@ export default function PinForm() {
         aria-label="Note"
         className={inputClass}
       />
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
           required
@@ -86,6 +94,15 @@ export default function PinForm() {
           onChange={(event) => setPinnedBy(event.target.value)}
           placeholder="Your name"
           aria-label="Your name"
+          className={inputClass}
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Board password"
+          aria-label="Board password"
+          autoComplete="off"
           className={inputClass}
         />
         <button
