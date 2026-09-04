@@ -75,6 +75,16 @@ lib/metadata.ts           the only code that talks to the outside world
 drizzle/                  generated migrations
 ```
 
+## Contributing
+
+Nobody pushes to `main` — not even the repo owner. GitHub branch protection requires a pull request, applies to admins, and blocks force-pushes and deletions.
+
+1. `git checkout -b <type>/<short-name>` from an up-to-date `main`.
+2. Commit and push the branch.
+3. `gh pr create` (or open one on GitHub). Merging the PR deploys to production.
+
+Design changes wait for Sabina's approval before merging. Schema changes wait for Javier's.
+
 ## Deploying
 
 Live at **https://scale-pins.vercel.app**. The production instance runs on Vercel with a Neon Postgres provisioned through Vercel's marketplace, which injects `DATABASE_URL` into the project.
