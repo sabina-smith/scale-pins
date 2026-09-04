@@ -77,13 +77,11 @@ drizzle/                  generated migrations
 
 ## Contributing
 
-Nobody pushes to `main` — not even the repo owner. GitHub branch protection requires a pull request, applies to admins, and blocks force-pushes and deletions.
+Nobody pushes to `main`. GitHub branch protection requires a pull request, applies to admins, and blocks force-pushes and deletions.
 
 1. `git checkout -b <type>/<short-name>` from an up-to-date `main`.
 2. Commit and push the branch.
 3. `gh pr create` (or open one on GitHub). Merging the PR deploys to production.
-
-Design changes wait for Sabina's approval before merging. Schema changes wait for Javier's.
 
 ## Deploying
 
