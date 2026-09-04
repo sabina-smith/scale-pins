@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-// A full-page WebGL backdrop: two layers of slowly drifting value noise, a
-// deeper and a paler warm brown over the light-brown base, plus a whisper of
-// grain. Contrast is
+// A full-page WebGL backdrop: two large, very transparent light-brown discs
+// drifting slowly over white. Contrast is
 // kept very low so text on top of it stays readable. Zero dependencies; if
 // WebGL is unavailable the canvas stays blank and the body colour shows.
 
@@ -18,47 +17,27 @@ precision highp float;
 uniform vec2 u_res;
 uniform float u_time;
 
-float hash(vec2 p) {
-  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
-
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(
-    mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-    u.y
-  );
-}
-
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-  for (int i = 0; i < 5; i++) {
-    v += a * noise(p);
-    p *= 2.03;
-    a *= 0.5;
-  }
-  return v;
+// One soft disc: 1.0 at the centre, fading to 0.0 at the radius.
+float disc(vec2 uv, vec2 center, float radius) {
+  float d = distance(uv, center);
+  return 1.0 - smoothstep(radius * 0.15, radius, d);
 }
 
 void main() {
   vec2 uv = gl_FragCoord.xy / u_res;
-  uv.x *= u_res.x / u_res.y;
-  float t = u_time * 0.03;
+  float aspect = u_res.x / u_res.y;
+  uv.x *= aspect;
+  float t = u_time * 0.08;
 
-  float n = fbm(uv * 1.4 + vec2(t, -t * 0.7));
-  float m = fbm(uv * 2.2 - vec2(t * 0.6, t * 0.4) + n);
+  // Two discs wandering on slow, non-repeating paths.
+  vec2 c1 = vec2(0.30 * aspect + 0.10 * sin(t * 0.70), 0.70 + 0.08 * cos(t * 0.53));
+  vec2 c2 = vec2(0.72 * aspect + 0.12 * cos(t * 0.61), 0.28 + 0.10 * sin(t * 0.47));
 
-  vec3 base   = vec3(0.788, 0.678, 0.545); // light brown, matches --color-brown-200
-  vec3 deeper = vec3(0.700, 0.580, 0.430);
-  vec3 paler  = vec3(0.870, 0.780, 0.660);
+  float a = disc(uv, c1, 0.55) * 0.20 + disc(uv, c2, 0.62) * 0.18;
 
-  vec3 col = mix(base, deeper, smoothstep(0.35, 0.75, n) * 0.55);
-  col = mix(col, paler, smoothstep(0.45, 0.80, m) * 0.45);
-  col += (hash(gl_FragCoord.xy + u_time) - 0.5) * 0.012;
+  vec3 white = vec3(1.0);
+  vec3 brown = vec3(0.788, 0.678, 0.545); // --color-brown-200
+  vec3 col = mix(white, brown, min(a, 0.30));
 
   gl_FragColor = vec4(col, 1.0);
 }
