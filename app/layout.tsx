@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full bg-brown-200 text-brown-900">
+      <body className="min-h-full bg-white text-brown-900">
         <ShaderBackdrop />
         {children}
       </body>

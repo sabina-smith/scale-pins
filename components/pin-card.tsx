@@ -44,7 +44,7 @@ export default function PinCard({ pin, index }: { pin: Pin; index: number }) {
         className="group block"
       >
         {showImage && (
-          <div className="mb-5 overflow-hidden rounded-sm bg-brown-300/60">
+          <div className="mb-5 overflow-hidden rounded-sm bg-brown-100">
             <img
               src={pin.imageUrl as string}
               alt=""
