@@ -14,27 +14,36 @@ export default async function Home() {
     .limit(100);
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-10">
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Pin Board</h1>
-        <p className="text-sm text-gray-500">
-          Paste a link to share it with everyone.
+    <main className="mx-auto grid min-h-screen w-full max-w-7xl gap-14 px-6 py-14 lg:grid-cols-3 lg:gap-20 lg:px-12">
+      {/* Left third: identity and the paste form, pinned while the feed scrolls. */}
+      <aside className="animate-fade lg:sticky lg:top-14 lg:self-start">
+        <h1 className="text-[2.75rem] font-light leading-none tracking-tight text-stone-900">
+          Pin Board
+        </h1>
+        <p className="mt-3 text-sm text-stone-500">
+          Paste a link. Everyone sees it.
         </p>
-      </header>
+        <div className="mt-12">
+          <PinForm />
+        </div>
+      </aside>
 
-      <PinForm />
-
-      {rows.length === 0 ? (
-        <p className="mt-10 rounded-lg border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500">
-          No pins yet. Paste a link above to start the board.
-        </p>
-      ) : (
-        <ul className="mt-8 space-y-4">
-          {rows.map((pin) => (
-            <PinCard key={pin.id} pin={pin} />
-          ))}
-        </ul>
-      )}
+      {/* Remaining two thirds, with the feed centred inside them. */}
+      <section className="flex justify-center lg:col-span-2">
+        <div className="w-full max-w-xl">
+          {rows.length === 0 ? (
+            <p className="animate-rise pt-2 text-sm text-stone-400">
+              Nothing here yet. The first pin goes to the top.
+            </p>
+          ) : (
+            <ul className="space-y-14">
+              {rows.map((pin, index) => (
+                <PinCard key={pin.id} pin={pin} index={index} />
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
     </main>
   );
 }

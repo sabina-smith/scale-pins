@@ -22,49 +22,61 @@ function relativeTime(date: Date): string {
   return `${days}d ago`;
 }
 
-export default function PinCard({ pin }: { pin: Pin }) {
+// Cards rise in one after another on load. The stagger is capped so a long
+// feed does not keep the reader waiting on the ones below the fold.
+const STAGGER_MS = 45;
+const MAX_STAGGERED = 12;
+
+export default function PinCard({ pin, index }: { pin: Pin; index: number }) {
   // A remote image can 404 or be blocked; hide the slot instead of showing a
   // broken image icon.
   const [imageFailed, setImageFailed] = useState(false);
   const host = hostnameOf(pin.url);
   const showImage = pin.imageUrl !== null && !imageFailed;
+  const delay = Math.min(index, MAX_STAGGERED) * STAGGER_MS;
 
   return (
-    <li>
+    <li className="animate-rise" style={{ animationDelay: `${delay}ms` }}>
       <a
         href={pin.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:border-gray-400 hover:shadow-sm"
+        className="group block"
       >
         {showImage && (
-          <img
-            src={pin.imageUrl as string}
-            alt=""
-            loading="lazy"
-            onError={() => setImageFailed(true)}
-            className="h-44 w-full bg-gray-100 object-cover"
-          />
+          <div className="mb-5 overflow-hidden rounded-sm bg-stone-200/60">
+            <img
+              src={pin.imageUrl as string}
+              alt=""
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+              className="aspect-[16/9] w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]"
+            />
+          </div>
         )}
-        <div className="space-y-1 p-4">
-          <h2 className="font-medium text-gray-900">{pin.title ?? host}</h2>
-          <p className="text-sm text-gray-500">{host}</p>
-          {pin.note && (
-            <p className="pt-1 text-sm text-gray-700">{pin.note}</p>
-          )}
-          <p className="pt-2 text-xs text-gray-500">
-            {pin.pinnedBy} &middot;{" "}
-            {/* Relative time is computed from the current clock, so the server
-                and client strings can differ by a second on hydration. */}
-            <time
-              dateTime={pin.createdAt.toISOString()}
-              title={pin.createdAt.toLocaleString()}
-              suppressHydrationWarning
-            >
-              {relativeTime(pin.createdAt)}
-            </time>
+        <p className="text-[11px] uppercase tracking-[0.18em] text-stone-400">
+          {host}
+        </p>
+        <h2 className="mt-2 text-xl font-light leading-snug text-stone-900 transition duration-300 group-hover:text-stone-500">
+          {pin.title ?? host}
+        </h2>
+        {pin.note && (
+          <p className="mt-3 text-sm leading-relaxed text-stone-600">
+            {pin.note}
           </p>
-        </div>
+        )}
+        <p className="mt-4 text-xs text-stone-400">
+          {pin.pinnedBy} &middot;{" "}
+          {/* Relative time is computed from the current clock, so the server
+              and client strings can differ by a second on hydration. */}
+          <time
+            dateTime={pin.createdAt.toISOString()}
+            title={pin.createdAt.toLocaleString()}
+            suppressHydrationWarning
+          >
+            {relativeTime(pin.createdAt)}
+          </time>
+        </p>
       </a>
     </li>
   );

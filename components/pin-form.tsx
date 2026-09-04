@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 const NAME_STORAGE_KEY = "pin-board:name";
 const PASSWORD_STORAGE_KEY = "pin-board:password";
 
-const inputClass =
-  "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-500 focus:outline-none";
+// Underline-only fields: no boxes, the rule darkens on focus.
+const fieldClass =
+  "w-full border-0 border-b border-stone-300 bg-transparent px-0 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 transition-colors duration-300 focus:border-stone-900 focus:outline-none";
 
 export default function PinForm() {
   const router = useRouter();
@@ -65,55 +66,60 @@ export default function PinForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-3 rounded-lg border border-gray-200 bg-white p-4"
-    >
+    <form onSubmit={handleSubmit} className="space-y-6">
       <input
         type="url"
         required
         value={url}
         onChange={(event) => setUrl(event.target.value)}
-        placeholder="https://example.com"
+        placeholder="https://"
         aria-label="URL"
-        className={inputClass}
+        className={fieldClass}
       />
       <textarea
         rows={2}
         value={note}
         onChange={(event) => setNote(event.target.value)}
-        placeholder="Note (optional)"
+        placeholder="A note, if you like"
         aria-label="Note"
-        className={inputClass}
+        className={`${fieldClass} resize-none`}
       />
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <input
-          type="text"
-          required
-          value={pinnedBy}
-          onChange={(event) => setPinnedBy(event.target.value)}
-          placeholder="Your name"
-          aria-label="Your name"
-          className={inputClass}
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Board password"
-          aria-label="Board password"
-          autoComplete="off"
-          className={inputClass}
-        />
+      <input
+        type="text"
+        required
+        value={pinnedBy}
+        onChange={(event) => setPinnedBy(event.target.value)}
+        placeholder="Your name"
+        aria-label="Your name"
+        className={fieldClass}
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+        placeholder="Board password"
+        aria-label="Board password"
+        autoComplete="off"
+        className={fieldClass}
+      />
+      <div className="flex items-center gap-5 pt-2">
         <button
           type="submit"
           disabled={submitting}
-          className="shrink-0 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+          className="group inline-flex items-center gap-2 text-sm text-stone-900 transition disabled:text-stone-400"
         >
-          {submitting ? "Pinning…" : "Pin it"}
+          <span>{submitting ? "Pinning" : "Pin it"}</span>
+          <span
+            aria-hidden="true"
+            className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1 group-disabled:translate-x-0"
+          >
+            →
+          </span>
         </button>
+        {error && (
+          <p className="animate-fade text-xs text-rose-600">{error}</p>
+        )}
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
     </form>
   );
 }
