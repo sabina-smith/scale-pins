@@ -44,6 +44,24 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* A warm inversion of the brown scale keeps existing utilities semantic in
+   dark mode: brown-900 remains the highest-contrast text, while brown-50 is
+   the deepest surface. */
+html.theme-dark {
+  color-scheme: dark;
+  --color-white: #17120e;
+  --color-brown-50: #211912;
+  --color-brown-100: #302419;
+  --color-brown-200: #4b3827;
+  --color-brown-300: #6b503a;
+  --color-brown-400: #8c6d4e;
+  --color-brown-500: #ad8c6d;
+  --color-brown-600: #c6aa91;
+  --color-brown-700: #dbc7b4;
+  --color-brown-800: #eadbcc;
+  --color-brown-900: #fbf4eb;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

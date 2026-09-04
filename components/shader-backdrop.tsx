@@ -16,6 +16,7 @@ const FRAGMENT = `
 precision highp float;
 uniform vec2 u_res;
 uniform float u_time;
+uniform float u_dark;
 
 // One soft disc: 1.0 at the centre, fading to 0.0 at the radius.
 float disc(vec2 uv, vec2 center, float radius) {
@@ -35,9 +36,13 @@ void main() {
 
   float a = disc(uv, c1, 0.55) * 0.20 + disc(uv, c2, 0.62) * 0.18;
 
-  vec3 white = vec3(1.0);
-  vec3 brown = vec3(0.788, 0.678, 0.545); // --color-brown-200
-  vec3 col = mix(white, brown, min(a, 0.30));
+  vec3 lightGround = vec3(1.0);
+  vec3 darkGround = vec3(0.090, 0.071, 0.055); // --color-white in dark mode
+  vec3 lightBrown = vec3(0.788, 0.678, 0.545); // --color-brown-200
+  vec3 darkBrown = vec3(0.294, 0.220, 0.153); // --color-brown-200 in dark mode
+  vec3 ground = mix(lightGround, darkGround, u_dark);
+  vec3 brown = mix(lightBrown, darkBrown, u_dark);
+  vec3 col = mix(ground, brown, min(a, 0.30));
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -88,6 +93,7 @@ export default function ShaderBackdrop() {
 
     const uRes = gl.getUniformLocation(program, "u_res");
     const uTime = gl.getUniformLocation(program, "u_time");
+    const uDark = gl.getUniformLocation(program, "u_dark");
 
     function resize() {
       if (!canvas || !gl) return;
@@ -108,6 +114,10 @@ export default function ShaderBackdrop() {
     function draw() {
       if (!gl) return;
       gl.uniform1f(uTime, (performance.now() - start) / 1000);
+      gl.uniform1f(
+        uDark,
+        document.documentElement.classList.contains("theme-dark") ? 1 : 0,
+      );
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
 
@@ -124,6 +134,11 @@ export default function ShaderBackdrop() {
     resize();
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", onVisibility);
+    const themeObserver = new MutationObserver(draw);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     // Reduced motion: one still frame, no loop.
     if (reduceMotion) draw();
@@ -133,6 +148,7 @@ export default function ShaderBackdrop() {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVisibility);
+      themeObserver.disconnect();
       gl.deleteProgram(program);
       gl.deleteShader(vs);
       gl.deleteShader(fs);

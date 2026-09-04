@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { pins } from "@/lib/schema";
 import PinCard from "@/components/pin-card";
 import PinForm from "@/components/pin-form";
+import ThemeToggle from "@/components/theme-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +32,12 @@ export default async function Home({ searchParams }: HomeProps) {
     <main className="mx-auto grid min-h-screen w-full max-w-7xl gap-14 px-6 py-14 lg:grid-cols-3 lg:gap-20 lg:px-12">
       {/* Left third: identity and the paste form, pinned while the feed scrolls. */}
       <aside className="animate-fade lg:sticky lg:top-14 lg:self-start">
-        <h1 className="text-[2.75rem] font-light leading-none tracking-tight text-brown-900">
-          Pin Board
-        </h1>
+        <div className="flex items-center justify-between gap-6">
+          <h1 className="text-[2.75rem] font-light leading-none tracking-tight text-brown-900">
+            Pin Board
+          </h1>
+          <ThemeToggle />
+        </div>
         <p className="mt-3 text-sm text-brown-700">
           Paste a link. Everyone sees it.
         </p>
